@@ -8,10 +8,7 @@ import android.os.AsyncTask
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.widget.ArrayAdapter
-import android.widget.Button
-import android.widget.ListView
-import android.widget.Toast
+import android.widget.*
 import java.io.ByteArrayOutputStream
 import java.io.IOException
 import java.io.InputStream
@@ -21,48 +18,57 @@ import java.util.ArrayList
 
 class MainActivity : AppCompatActivity() {
 
-    var listView : ListView? = null
     private lateinit var db: SQLiteDatabase
     private lateinit var btnIngresar : Button
+    private lateinit var txtSorteo : EditText
+    private lateinit var txtNumero : EditText
+    private lateinit var listView : ListView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-        //btnIngresar = findViewById( R.id.btnIngresar )
-        findViewById<Button>( R.id.btnIngresar ).setOnClickListener{ btnIngresar() }
-        //createDatabase()
+        setContentView( R.layout.activity_main )
+        btnIngresar = findViewById( R.id.btnIngresar )
+        btnIngresar.setOnClickListener{ btnIngresar() }
+        txtSorteo = findViewById( R.id.txtSorteo )
+        txtNumero = findViewById( R.id.txtNumero )
+        listView = findViewById( R.id.listNumeros )
+        openCreateDatabase()
+        Listar()
     }
 
     fun btnIngresar(){
-        val retrieveTastk = RetrieveTask( this )
-        retrieveTastk.execute( "http://experimentaciones.000webhostapp.com/premiados.txt" )
+        db!!.execSQL( "insert into sorteos values ( ? )", arrayOf( txtSorteo.text ) )
+        db!!.execSQL( "insert into numeros values ( ?, ? )", arrayOf( txtSorteo.text, txtNumero.text ) )
+        Toast.makeText( this, "Inserción realizada con éxito", Toast.LENGTH_LONG ).show()
+        Listar()
+        //val retrieveTastk = RetrieveTask( this )
+        //retrieveTastk.execute( "http://experimentaciones.000webhostapp.com/premiados.txt" )
     }
 
-    fun createDatabase(){
+    fun openCreateDatabase(){
         db = openOrCreateDatabase("Loteria", Context.MODE_PRIVATE, null)
         db.execSQL(
-            "create table sorteo(\n" +
-                    "\tid int primary key,\n" +
-                    "\tnumero int not null\n" +
-                ");\n" +
-                "\n" +
-                "create table numeros(\n" +
-                    "\tid int primary key,\n" +
-                    "\tid_sorteo int not null, \n" +
+            "create table if not exists sorteos(\n" +
+                    "\tsorteo int primary key\n" +
+                ")")
+        db.execSQL(
+            "create table if not exists numeros(\n" +
+                    "\tsorteo int not null, \n" +
                     "\tnumero int not null,\n" +
-                    "\tconstraint FK_ID_SORTEO_NUMEROS foreign key (id_sorteo) references sorteo(id)\n" +
+                    "\tprimary key( sorteo, numero )"+
+                    "\tconstraint FK_SORTEO_NUMEROS foreign key (sorteo) references sorteos(sorteo)\n" +
                 ");")
     }
 
     fun Listar() {
         val adaptador: ArrayAdapter<*>
-        val lista : ArrayList<Any>? = null
-        val c = db.rawQuery("select id_sorteo, numero from numeros;", null)
+        var lista : ArrayList<Any>? = null
+        val c = db.rawQuery("select sorteo, numero from numeros;", null)
         if ( c.getCount() == 0 )
             lista!!.add("No hay registros en la BD")
         else {
-            while (c.moveToNext())
-                lista!!.add(c.getString(0) + " - (" + c.getString(1) + ")")
+            while ( c.moveToNext() )
+                lista!!.add("" + c.getInt(0) + " - (" + c.getInt(1) + ")")
         }
         adaptador = ArrayAdapter(applicationContext, android.R.layout.simple_list_item_1, lista)
         listView!!.adapter = (adaptador)
