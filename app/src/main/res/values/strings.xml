@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">ConexionHTTP</string>
+    <string name="txtHint">Número</string>
+    <string name="btnIngresar">Ingresar</string>
+</resources>
