@@ -62,13 +62,14 @@ class MainActivity : AppCompatActivity() {
 
     fun Listar() {
         val adaptador: ArrayAdapter<*>
-        var lista : ArrayList<Any>? = null
+        val lista = ArrayList<Any>()
         val c = db.rawQuery("select sorteo, numero from numeros;", null)
         if ( c.getCount() == 0 )
-            lista!!.add("No hay registros en la BD")
+            lista.add("No hay registros en la BD")
         else {
             while ( c.moveToNext() )
-                lista!!.add("" + c.getInt(0) + " - (" + c.getInt(1) + ")")
+            //Log.d("ERROR", "" + c.getInt(0) + " - (" + c.getInt(1) + ")")
+            lista.add("Sorteo: " + c.getInt(0) + " - Numero: " + c.getInt(1) + "")
         }
         adaptador = ArrayAdapter(applicationContext, android.R.layout.simple_list_item_1, lista)
         listView!!.adapter = (adaptador)
