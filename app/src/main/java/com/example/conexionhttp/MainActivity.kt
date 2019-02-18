@@ -8,6 +8,7 @@ import android.os.AsyncTask
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.*
 import java.io.ByteArrayOutputStream
 import java.io.IOException
@@ -29,6 +30,7 @@ class MainActivity : AppCompatActivity() {
         setContentView( R.layout.activity_main )
         btnIngresar = findViewById( R.id.btnIngresar )
         btnIngresar.setOnClickListener{ btnIngresar() }
+        findViewById<Button>( R.id.btnSorteo ).setOnClickListener{ btnSorteo() }
         txtSorteo = findViewById( R.id.txtSorteo )
         txtNumero = findViewById( R.id.txtNumero )
         listView = findViewById( R.id.listNumeros )
@@ -36,13 +38,31 @@ class MainActivity : AppCompatActivity() {
         Listar()
     }
 
+    override fun onSupportNavigateUp(): Boolean {
+        val tab1 = findViewById<View>(R.id.tab1)
+        val tab2 = findViewById<View>(R.id.tab2)
+        tab1.visibility = ( View.VISIBLE )
+        tab2.visibility = ( View.GONE  )
+        supportActionBar!!.setDisplayHomeAsUpEnabled(false)
+        return false
+    }
+
+    fun btnSorteo(){
+        val tab1 = findViewById<View>(R.id.tab1)
+        val tab2 = findViewById<View>(R.id.tab2)
+        tab1.visibility = ( View.GONE )
+        tab2.visibility = ( View.VISIBLE )
+        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+
+        //consultamos sorteo :D
+        RetrieveTask( baseContext ).execute( "http://experimentaciones.000webhostapp.com/premiados.txt" )
+    }
+
     fun btnIngresar(){
         db!!.execSQL( "insert into sorteos values ( ? )", arrayOf( txtSorteo.text ) )
         db!!.execSQL( "insert into numeros values ( ?, ? )", arrayOf( txtSorteo.text, txtNumero.text ) )
         Toast.makeText( this, "Inserción realizada con éxito", Toast.LENGTH_LONG ).show()
         Listar()
-        //val retrieveTastk = RetrieveTask( this )
-        //retrieveTastk.execute( "http://experimentaciones.000webhostapp.com/premiados.txt" )
     }
 
     fun openCreateDatabase(){
@@ -78,6 +98,7 @@ class MainActivity : AppCompatActivity() {
 
     class RetrieveTask( contextxx: Context ) : AsyncTask<String, String, String>(){
         private val contextx = contextxx
+
         override fun onPreExecute() {
             super.onPreExecute()
         }
@@ -91,7 +112,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         override fun onPostExecute(result: String?) {
-            Toast.makeText( contextx, "Con" + result, Toast.LENGTH_LONG )
+            Toast.makeText( contextx, "Con" + result, Toast.LENGTH_LONG ).show()
         }
 
         @Throws(IOException::class)
