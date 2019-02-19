@@ -10,7 +10,7 @@
             android:id="@+id/tab1"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:visibility="visible">
+            android:visibility="gone">
             <Button
                     android:text="@string/btnIngresar"
                     android:layout_width="wrap_content"
@@ -19,7 +19,7 @@
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_bias="0.3"
+                    app:layout_constraintVertical_bias="0.322"
                     android:id="@+id/btnIngresar"/>
             <Button
                     android:text="@string/btnSorteo"
@@ -29,7 +29,7 @@
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintVertical_bias="0.817"
+                    app:layout_constraintVertical_bias="0.893"
                     android:id="@+id/btnSorteo" android:layout_marginLeft="148dp"
                     app:layout_constraintHorizontal_bias="0.0"/>
             <EditText
@@ -61,7 +61,7 @@
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintTop_toTopOf="parent" android:id="@+id/listNumeros"
-                    app:layout_constraintHorizontal_bias="0.492" app:layout_constraintVertical_bias="0.522"/>
+                    app:layout_constraintHorizontal_bias="0.492" app:layout_constraintVertical_bias="0.611"/>
         </android.support.constraint.ConstraintLayout>
 
 
@@ -69,7 +69,7 @@
                 android:id="@+id/tab2"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:visibility="gone">
+                android:visibility="visible">
             <TextView
                     android:text="Diego"
                     android:layout_width="196dp" android:layout_height="58dp"
@@ -77,8 +77,20 @@
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_bias="0.056"
-                    app:layout_constraintHorizontal_bias="0.181" android:textSize="22dp" android:singleLine="false"
+                    app:layout_constraintVertical_bias="0.298"
+                    app:layout_constraintHorizontal_bias="0.451" android:textSize="22dp" android:singleLine="false"
                     android:id="@+id/txtPremiados"/>
+            <EditText
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:inputType="textPersonName"
+                    android:ems="10"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.16"
+                    android:id="@+id/editText" android:hint="@string/txtSorteoCon"
+                    app:layout_constraintHorizontal_bias="0.489"/>
         </android.support.constraint.ConstraintLayout>
 </android.support.constraint.ConstraintLayout>

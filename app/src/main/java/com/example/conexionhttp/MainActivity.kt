@@ -55,7 +55,7 @@ class MainActivity : AppCompatActivity() {
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
 
         //consultamos sorteo :D
-        RetrieveTask( baseContext ).execute( "http://experimentaciones.000webhostapp.com/premiados.txt" )
+        RetrieveTask( baseContext ).execute( "http://experimentaciones.000webhostapp.com/bajar_resultados.php?num_sorteo=" + txtSorteoCon.text )
     }
 
     fun btnIngresar(){

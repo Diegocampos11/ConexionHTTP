@@ -4,4 +4,5 @@
     <string name="btnIngresar">Ingresar</string>
     <string name="hintSorteo">Sorteo</string>
     <string name="btnSorteo">Comprobar Sorteo</string>
+    <string name="txtSorteoCon">Número de sorteo...</string>
 </resources>
