@@ -148,8 +148,6 @@ class NuevoSorteo : Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        //showNotification( Intent(), intent!!.getExtras()!!.getString("param"), countIdNotification++)
-
         //handler
         val thread = HandlerThread( "ServiceStartArguments", Process.THREAD_PRIORITY_BACKGROUND )
         thread.start()

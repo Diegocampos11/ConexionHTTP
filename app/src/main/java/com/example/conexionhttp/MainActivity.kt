@@ -141,7 +141,7 @@ class MainActivity : AppCompatActivity() {
             //Log.d("ERROR", "" + c.getInt(0) + " - (" + c.getInt(1) + ")")
             lista.add("Sorteo: " + c.getInt(0) + " - Numero: " + c.getInt(1) + "")
         }
-        adaptador = ArrayAdapter(applicationContext, android.R.layout.simple_list_item_1, lista)
+        adaptador = ArrayAdapter( this@MainActivity , android.R.layout.simple_list_item_1, lista)
         listView!!.adapter = (adaptador)
         c.close()
     }
