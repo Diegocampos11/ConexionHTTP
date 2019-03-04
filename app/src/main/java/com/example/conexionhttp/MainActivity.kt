@@ -2,12 +2,15 @@
 
 package com.example.conexionhttp
 
+import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.database.sqlite.SQLiteDatabase
 import android.os.AsyncTask
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.v4.app.NotificationCompat
+import android.support.v4.app.NotificationManagerCompat
 import android.util.Log
 import android.view.View
 import android.widget.*
@@ -17,6 +20,15 @@ import java.io.InputStream
 import java.net.HttpURLConnection
 import java.net.URL
 import java.util.ArrayList
+import android.R.attr.action
+import android.app.Notification
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.os.Build
+
+
+
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -27,6 +39,26 @@ class MainActivity : AppCompatActivity() {
     private lateinit var txtSorteoCon : EditText
     private lateinit var txtPremiados : TextView
     private lateinit var listView : ListView
+    private var vibracion = longArrayOf(
+        0,
+        600,
+        100,
+        600,
+        100,
+        600,
+        100,
+        200,
+        100,
+        200,
+        100,
+        200,
+        100,
+        600,
+        100,
+        600,
+        100,
+        600
+    )
     //private lateinit var responseServer : String
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,7 +75,6 @@ class MainActivity : AppCompatActivity() {
         listView = findViewById( R.id.listNumeros )
         openCreateDatabase()
         Listar()
-        Log.d("XXXXXXXXXXX", "OK")
         startService( Intent( this, NuevoSorteo::class.java ).putExtra("param", "NADA") )
     }
 

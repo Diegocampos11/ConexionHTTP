@@ -1,9 +1,6 @@
 package com.example.conexionhttp
 
-import android.app.Notification
-import android.app.NotificationManager
-import android.app.PendingIntent
-import android.app.Service
+import android.app.*
 import android.content.Context
 import android.content.Intent
 import android.graphics.BitmapFactory
@@ -17,6 +14,10 @@ import java.io.IOException
 import java.io.InputStream
 import java.net.HttpURLConnection
 import java.net.URL
+import android.support.v4.app.NotificationManagerCompat
+import android.support.v4.app.NotificationCompat
+
+
 
 
 class NuevoSorteo : Service() {
@@ -24,6 +25,27 @@ class NuevoSorteo : Service() {
     private var mServiceLooper: Looper? = null
     private var mServiceHandler: ServiceHandler? = null
     private var countIdNotification = 0
+    private var CHANNEL_ID = "default"
+    private var vibracion = longArrayOf(
+        0,
+        600,
+        100,
+        600,
+        100,
+        600,
+        100,
+        200,
+        100,
+        200,
+        100,
+        200,
+        100,
+        600,
+        100,
+        600,
+        100,
+        600
+    )//indica el patron de vibracion
 
     // Handler that receives messages from the thread
     private inner class ServiceHandler : Handler {
@@ -44,10 +66,11 @@ class NuevoSorteo : Service() {
             if ( ultimoCalculadoServer > Integer.parseInt( if ( ultimo === "" ) "0" else ultimo ) ){
                 ultimo = ultimoCalculadoServer.toString()
                 actualizarUltimo( ultimo )
-                showNotification( Intent(), "Nuevo sorteo encontrado!! $ultimo", countIdNotification++ )
+                createNotification( "Nuevo sorteo encontrado!! $ultimo", applicationContext )
             }
-            else showNotification( Intent(), "El utlimo sorteo registrado es!! $ultimo", countIdNotification++ )
-            //stopSelf( msg.arg1 )
+            else createNotification( "El utlimo sorteo registrado es!! $ultimo", applicationContext )
+
+            stopSelf( msg.arg1 )
         }
     }
 
@@ -125,7 +148,7 @@ class NuevoSorteo : Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        showNotification( Intent(), intent!!.getExtras()!!.getString("param"), countIdNotification++)
+        //showNotification( Intent(), intent!!.getExtras()!!.getString("param"), countIdNotification++)
 
         //handler
         val thread = HandlerThread( "ServiceStartArguments", Process.THREAD_PRIORITY_BACKGROUND )
@@ -139,18 +162,83 @@ class NuevoSorteo : Service() {
         val msg = mServiceHandler!!.obtainMessage()
         msg.arg1 = startId
         mServiceHandler!!.sendMessage(msg)
-        Log.d("XXXXXXXXXXX", "OK")
+        //Log.d("XXXXXXXXXXX", "OK")
         return super.onStartCommand(intent, flags, startId)////Service.START_REDELIVER_INTENT
     }
 
     override fun onDestroy() {
-        showNotification( Intent(), "Destruido", countIdNotification++)
         super.onDestroy()
     }
 
+    fun createNotification(aMessage: String, context: Context) {
+        var notifManager : NotificationManager? = null
+        val NOTIFY_ID = 0 // ID of notification
+        val id = "default" // default_channel_id
+        val title = "titulo"
+        val intent: Intent
+        val pendingIntent: PendingIntent
+        val builder: NotificationCompat.Builder
+        if (notifManager == null) {
+            notifManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val importance = NotificationManager.IMPORTANCE_HIGH
+            var mChannel = notifManager.getNotificationChannel(id)
+            if (mChannel == null) {
+                mChannel = NotificationChannel(id, title, importance)
+                mChannel!!.enableVibration(true)
+                mChannel!!.setVibrationPattern(longArrayOf(100, 200, 300, 400, 500, 400, 300, 200, 400))
+                notifManager.createNotificationChannel(mChannel)
+            }
+            builder = NotificationCompat.Builder(context, id)
+            intent = Intent(context, MainActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+            pendingIntent = PendingIntent.getActivity(context, 0, intent, 0)
+            builder.setContentTitle(aMessage)                            // required
+                .setSmallIcon(android.R.drawable.ic_popup_reminder)   // required
+                .setContentText("xd") // required
+                .setDefaults(Notification.DEFAULT_ALL)
+                .setAutoCancel(true)
+                .setContentIntent(pendingIntent)
+                .setTicker(aMessage)
+                .setVibrate(longArrayOf(100, 200, 300, 400, 500, 400, 300, 200, 400))
+        } else {
+            builder = NotificationCompat.Builder(context, id)
+            intent = Intent(context, MainActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+            pendingIntent = PendingIntent.getActivity(context, 0, intent, 0)
+            builder.setContentTitle(aMessage)                            // required
+                .setSmallIcon(android.R.drawable.ic_popup_reminder)   // required
+                .setContentText("xd") // required
+                .setDefaults(Notification.DEFAULT_ALL)
+                .setAutoCancel(true)
+                .setContentIntent(pendingIntent)
+                .setTicker(aMessage)
+                .setVibrate(longArrayOf(100, 200, 300, 400, 500, 400, 300, 200, 400)).priority =
+                Notification.PRIORITY_HIGH
+        }
+        val notification = builder.build()
+        notifManager.notify(NOTIFY_ID, notification)
+    }
+
     fun showNotification(i: Intent, mensaje: String, notId: Int ) {
+        val pendingIntent = PendingIntent.getActivity( applicationContext, 0, i, 0)
+        val constructorNotif = NotificationCompat.Builder(applicationContext, CHANNEL_ID)
+            .setSmallIcon(R.drawable.notification_icon_background)
+            .setContentTitle( mensaje )
+            .setContentText("Titutlo")
+            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            .setContentIntent(pendingIntent)
+            .setAutoCancel(true)//por mas que pinches la notificacion no desaparecerá
+            .setVibrate(vibracion)
+
+        val notificationManager = NotificationManagerCompat.from(applicationContext)
+
+        notificationManager.notify( notId, constructorNotif.build() )
+        /*
         val mBuilder: Notification.Builder
         val mNotifyMgr = applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
 
         val icono = R.drawable.notification_icon_background
         i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
@@ -166,6 +254,6 @@ class NuevoSorteo : Service() {
             .setContentText( mensaje )
             .setVibrate( longArrayOf(100, 250, 100, 500) )
             .setAutoCancel( true )
-        mNotifyMgr.notify(notId, mBuilder.build())
+        mNotifyMgr.notify(notId, mBuilder.build())*/
     }
 }
