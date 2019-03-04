@@ -43,6 +43,7 @@ class MainActivity : AppCompatActivity() {
         listView = findViewById( R.id.listNumeros )
         openCreateDatabase()
         Listar()
+        Log.d("XXXXXXXXXXX", "OK")
         startService( Intent( this, NuevoSorteo::class.java ).putExtra("param", "NADA") )
     }
 

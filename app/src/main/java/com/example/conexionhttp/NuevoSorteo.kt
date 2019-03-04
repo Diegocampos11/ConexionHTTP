@@ -139,6 +139,7 @@ class NuevoSorteo : Service() {
         val msg = mServiceHandler!!.obtainMessage()
         msg.arg1 = startId
         mServiceHandler!!.sendMessage(msg)
+        Log.d("XXXXXXXXXXX", "OK")
         return super.onStartCommand(intent, flags, startId)////Service.START_REDELIVER_INTENT
     }
 
