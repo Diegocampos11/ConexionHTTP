@@ -3,6 +3,7 @@
 package com.example.conexionhttp
 
 import android.content.Context
+import android.content.Intent
 import android.database.sqlite.SQLiteDatabase
 import android.os.AsyncTask
 import android.support.v7.app.AppCompatActivity
@@ -23,7 +24,10 @@ class MainActivity : AppCompatActivity() {
     private lateinit var btnIngresar : Button
     private lateinit var txtSorteo : EditText
     private lateinit var txtNumero : EditText
+    private lateinit var txtSorteoCon : EditText
+    private lateinit var txtPremiados : TextView
     private lateinit var listView : ListView
+    //private lateinit var responseServer : String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,11 +35,15 @@ class MainActivity : AppCompatActivity() {
         btnIngresar = findViewById( R.id.btnIngresar )
         btnIngresar.setOnClickListener{ btnIngresar() }
         findViewById<Button>( R.id.btnSorteo ).setOnClickListener{ btnSorteo() }
+        findViewById<Button>( R.id.btnSorteoCon ).setOnClickListener{ btnSorteoCon() }
         txtSorteo = findViewById( R.id.txtSorteo )
         txtNumero = findViewById( R.id.txtNumero )
+        txtSorteoCon = findViewById( R.id.txtSorteoCon )
+        txtPremiados = findViewById( R.id.txtPremiados )
         listView = findViewById( R.id.listNumeros )
         openCreateDatabase()
         Listar()
+        startService( Intent( this, NuevoSorteo::class.java ).putExtra("param", "NADA") )
     }
 
     override fun onSupportNavigateUp(): Boolean {
@@ -47,22 +55,32 @@ class MainActivity : AppCompatActivity() {
         return false
     }
 
+    fun btnSorteoCon(){
+        //consultamos sorteo :D
+        RetrieveTask( baseContext, this ).execute( "http://experimentaciones.000webhostapp.com/bajar_resultados.php?num_sorteo=" + txtSorteoCon.text )
+    }
+
     fun btnSorteo(){
         val tab1 = findViewById<View>(R.id.tab1)
         val tab2 = findViewById<View>(R.id.tab2)
         tab1.visibility = ( View.GONE )
         tab2.visibility = ( View.VISIBLE )
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-
-        //consultamos sorteo :D
-        RetrieveTask( baseContext ).execute( "http://experimentaciones.000webhostapp.com/bajar_resultados.php?num_sorteo=" + txtSorteoCon.text )
     }
 
     fun btnIngresar(){
         db!!.execSQL( "insert into sorteos values ( ? )", arrayOf( txtSorteo.text ) )
-        db!!.execSQL( "insert into numeros values ( ?, ? )", arrayOf( txtSorteo.text, txtNumero.text ) )
+        val split = explode( txtNumero.text.toString() )
+        for (i in split.indices) {
+            db!!.execSQL( "insert into numeros values ( ?, ? )", arrayOf( txtSorteo.text, split[i] ) )
+        }
         Toast.makeText( this, "Inserción realizada con éxito", Toast.LENGTH_LONG ).show()
         Listar()
+    }
+
+    fun explode( text : String ) : Array<String> {
+        val split = text.split( ",".toRegex() ).dropLastWhile { it.isEmpty() }.toTypedArray()
+        return split
     }
 
     fun openCreateDatabase(){
@@ -96,8 +114,9 @@ class MainActivity : AppCompatActivity() {
         c.close()
     }
 
-    class RetrieveTask( contextxx: Context ) : AsyncTask<String, String, String>(){
-        private val contextx = contextxx
+    class RetrieveTask( contextxx: Context, activity: MainActivity ) : AsyncTask<String, String, String>(){
+        //private val contextx = contextxx
+        private val activity : MainActivity = activity
 
         override fun onPreExecute() {
             super.onPreExecute()
@@ -112,7 +131,21 @@ class MainActivity : AppCompatActivity() {
         }
 
         override fun onPostExecute(result: String?) {
-            Toast.makeText( contextx, "Con" + result, Toast.LENGTH_LONG ).show()
+            val numerosServer = activity.explode( result!! )
+            //
+            val misNumeros = ArrayList<Any>()
+            val c = activity.db.rawQuery("select numero from numeros where sorteo = ?;", arrayOf( activity.txtSorteoCon.text.toString() ) )
+            if ( c.count == 0 )
+                activity.txtPremiados.text = "No hay registros en la BD"
+            else {
+                while ( c.moveToNext() ) {
+                    activity.txtPremiados.text = "No hay registros en la BD"
+                }
+            }
+            for ( i in misNumeros.toArray().indices ) {
+                Log.d( "INFO", i.toString() )
+            }
+            c.close()
         }
 
         @Throws(IOException::class)

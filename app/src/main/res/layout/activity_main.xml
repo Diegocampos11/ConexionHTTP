@@ -10,7 +10,7 @@
             android:id="@+id/tab1"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:visibility="gone">
+            android:visibility="visible">
             <Button
                     android:text="@string/btnIngresar"
                     android:layout_width="wrap_content"
@@ -33,18 +33,18 @@
                     android:id="@+id/btnSorteo" android:layout_marginLeft="148dp"
                     app:layout_constraintHorizontal_bias="0.0"/>
             <EditText
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="217dp"
+                    android:layout_height="49dp"
                     android:inputType="textPersonName"
                     android:ems="10"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintTop_toTopOf="parent" android:id="@+id/txtNumero"
-                    android:hint="@string/txtHint" app:layout_constraintVertical_bias="0.186"
-                    android:importantForAutofill="no" app:layout_constraintHorizontal_bias="0.434"/>
+                    android:hint="@string/txtHint" app:layout_constraintVertical_bias="0.174"
+                    android:importantForAutofill="no" app:layout_constraintHorizontal_bias="0.438"/>
             <EditText
-                    android:layout_width="wrap_content"
+                    android:layout_width="218dp"
                     android:layout_height="wrap_content"
                     android:inputType="textPersonName"
                     android:ems="10"
@@ -69,16 +69,16 @@
                 android:id="@+id/tab2"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:visibility="visible">
+                android:visibility="gone">
             <TextView
                     android:text="Diego"
-                    android:layout_width="196dp" android:layout_height="58dp"
+                    android:layout_width="213dp" android:layout_height="58dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_bias="0.298"
-                    app:layout_constraintHorizontal_bias="0.451" android:textSize="22dp" android:singleLine="false"
+                    app:layout_constraintVertical_bias="0.353"
+                    android:textSize="22dp" android:singleLine="false"
                     android:id="@+id/txtPremiados"/>
             <EditText
                     android:layout_width="wrap_content"
@@ -89,8 +89,18 @@
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_bias="0.16"
-                    android:id="@+id/editText" android:hint="@string/txtSorteoCon"
+                    app:layout_constraintVertical_bias="0.131"
+                    android:id="@+id/txtSorteoCon" android:hint="@string/txtSorteoCon"
                     app:layout_constraintHorizontal_bias="0.489"/>
+            <Button
+                    android:text="Consultar sorteo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.235"
+                    android:id="@+id/btnSorteoCon" app:layout_constraintHorizontal_bias="0.497"/>
         </android.support.constraint.ConstraintLayout>
 </android.support.constraint.ConstraintLayout>
